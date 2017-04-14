@@ -3,7 +3,11 @@
 	
 	Helper::getHeader('Registration | Algebra Contacts');
 	
-	DB::getInstance()->action('SELECT *', 'users');
+	DB::getInstance()->update('users',3, array(
+		'username'   => 'pero',
+		'name'       => 'Pero'
+	));
+	
 	
 	echo '<pre>';
 	var_dump(DB::getInstance());

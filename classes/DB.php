@@ -86,6 +86,68 @@ class DB
 		return false;
 	}
 	
+	public function get($field, $table, $where = array())
+	{
+		return $this->action("SELECT {$field}", $table, $where);
+	}
+	
+	public function find($id, $table)
+	{
+		return $this->action("SELECT *", $table, array('id','=',$id));
+	}
+	
+	public function delete($table, $where = array())
+	{
+		return $this->action("DELETE", $table, $where);
+	}
+	
+	public function insert($table, $fields)
+	{
+		$keys = implode(',', array_keys($fields));
+		$fields_num = count($fields);
+		$values = '';
+		$x = 1;
+		
+		foreach($fields as $field) {
+			$values .= '?';
+			if($x < $fields_num) {
+				$values .= ',';
+			}
+			$x++;
+		}
+
+		$sql = "INSERT INTO {$table} ({$keys}) VALUES ({$values})";
+		
+		if(!$this->query($sql, $fields)->error()) {
+			return true;
+		}
+		
+		return false;	
+	}
+	
+	public function update($table, $id, $fields)
+	{
+		$fields_num = count($fields);
+		$set = '';
+		$x = 1;
+		
+		foreach($fields as $key => $value) {
+			$set .= "{$key} = ?";
+			if($x < $fields_num) {
+				$set .= ', ';
+			}
+			$x++;
+		}
+		
+		$sql = "UPDATE {$table} SET {$set} WHERE id = {$id}";
+		
+		if(!$this->query($sql, $fields)->error()) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	
 	### GETERI ###
 	public function connection()
