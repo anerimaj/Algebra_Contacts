@@ -4,40 +4,44 @@
 	Helper::getHeader('Registration | Algebra Contacts');
 	
 	$validate = new Validation();
-	//echo '<pre>';
-	//var_dump($validate);
-	//echo '</pre>';
-	
+	$token = new Token();
+
 	if(Input::exists()){
-		
-		$validation = $validate->check(array(
-			'name' => array(
-				'required' => true,
-				'min'      => 2,
-				'max'      => 50
-			),
-			'username' => array(
-				'required' => true,
-				'min'      => 2,
-				'max'      => 20,
-				'unique'   => 'users'
-			),
-			'password' => array(
-				'required' => true,
-				'min'      => 8
-			),
-			'password_again' => array(
-				'required' => true,
-				'match'    => 'password'
-			)
-		));
-		
-		if($validation->passed()) {
-			// proces registracije
+		if($token->check(Input::get('token'))) {
+			$validation = $validate->check(array(
+				'name' => array(
+					'required' => true,
+					'min'      => 2,
+					'max'      => 50
+				),
+				'username' => array(
+					'required' => true,
+					'min'      => 2,
+					'max'      => 20,
+					'unique'   => 'users'
+				),
+				'password' => array(
+					'required' => true,
+					'min'      => 8
+				),
+				'password_again' => array(
+					'required' => true,
+					'match'    => 'password'
+				)
+			));
+			
+			if($validation->passed()) {
+				Session::flash('success', 'You registered successfully');
+				Redirect::to('login');
+			}
+		} else {
+			echo 'Token nije dobar';
 		}
+		
 		
 	}
 	
+	require_once 'notifications.php';
 
 ?>
 
@@ -49,6 +53,7 @@
 		  </div>
 		  <div class="panel-body">
 			<form method="post">
+				<input type="hidden" name="token" value="<?php echo $token->generate(); ?>">
 				<div class="form-group <?php echo ($validate->hasError('name')) ? 'has-error' : '' ?>">
 					<label for="name" class="control-label">Name*</label>
 					<input type="text" class="form-control" id="name" name ="name" placeholder="Enter your name" value="<?php echo sanitize(Input::get('name')); ?>">
