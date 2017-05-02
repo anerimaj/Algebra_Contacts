@@ -1,0 +1,5 @@
+RewriteEngine On
+ErrorDocument 404  /php_mysql/Algebra_Contacts/includes/errors/404.php
+
+
+

@@ -2,28 +2,28 @@
 
 class Helper
 {
-	private function __construct(){}
-	private function __clone(){}
-	
-	public static function getHeader($title, $file = 'header')
-	{
-		$path = 'includes/layout/'.$file.'.php';
-		
-		if(is_file($path)) {
-			return require_once $path;
-		}
-		
-		return false;
-	}
-	
-	public static function getFooter($file = 'footer')
-	{
-		$path = 'includes/layout/'.$file.'.php';
-		
-		if(is_file($path)) {
-			return require_once $path;
-		}
-		
-		return false;
-	}
+    private static $_config;
+
+    private function __construct(){
+        self::$_config = Config::get('config/app');
+    }
+    private function __clone(){}
+
+    public static function getHeader($title, $path, $user = null)
+    {
+        if($path) {
+            $file = require_once 'includes/layout/'.$path.'.php';
+            return $file;
+        }
+        return false;
+    }
+
+    public static function getFooter($path = 'footer')
+    {
+        if($path) {
+            $file = require_once 'includes/layout/'.$path.'.php';
+            return $file;
+        }
+        return false;
+    }
 }
